@@ -1,0 +1,94 @@
+{
+  "subjects": [
+    {
+      "id": 1,
+      "name": "Mathematics",
+      "professor": {
+        "id": 1,
+        "name": "John Smith",
+        "email": "john.smith@university.edu"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Statistics",
+      "professor": {
+        "id": 1,
+        "name": "John Smith",
+        "email": "john.smith@university.edu"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Physics",
+      "professor": {
+        "id": 2,
+        "name": "Jane Doe",
+        "email": "jane.doe@university.edu"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Astrophysics",
+      "professor": {
+        "id": 2,
+        "name": "Jane Doe",
+        "email": "jane.doe@university.edu"
+      }
+    },
+    {
+      "id": 5,
+      "name": "Chemistry",
+      "professor": {
+        "id": 3,
+        "name": "Michael Johnson",
+        "email": "michael.johnson@university.edu"
+      }
+    },
+    {
+      "id": 6,
+      "name": "Biochemistry",
+      "professor": {
+        "id": 3,
+        "name": "Michael Johnson",
+        "email": "michael.johnson@university.edu"
+      }
+    },
+    {
+      "id": 7,
+      "name": "Literature",
+      "professor": {
+        "id": 4,
+        "name": "Emily Davis",
+        "email": "emily.davis@university.edu"
+      }
+    },
+    {
+      "id": 8,
+      "name": "Creative Writing",
+      "professor": {
+        "id": 4,
+        "name": "Emily Davis",
+        "email": "emily.davis@university.edu"
+      }
+    },
+    {
+      "id": 9,
+      "name": "History",
+      "professor": {
+        "id": 5,
+        "name": "William Brown",
+        "email": "william.brown@university.edu"
+      }
+    },
+    {
+      "id": 10,
+      "name": "World History",
+      "professor": {
+        "id": 5,
+        "name": "William Brown",
+        "email": "william.brown@university.edu"
+      }
+    }
+  ]
+}

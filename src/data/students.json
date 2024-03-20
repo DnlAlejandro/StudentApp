@@ -1,0 +1,16 @@
+{
+    "students": [
+        {
+            "id": "ABC123",
+            "name": "Daniel Diaz"
+        },
+        {
+            "id": "ABC124",
+            "name": "Conor Mcgregor"
+        },
+        {
+            "id": "ABC125",
+            "name": "Sean O'malley"
+        }
+    ]
+}
