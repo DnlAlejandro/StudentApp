@@ -1,68 +1,23 @@
 import { FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { Controller, useForm } from "react-hook-form";
-import studentsData from "../data/students.json";
-import subjectsData from "../data/subjects.json";
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { selectStudent } from '../store/studentSlice';
-import { useChangeRate } from '../hooks/useChangeRate';
+import { Controller } from "react-hook-form";
+import { useSummaryPage } from '../hooks/useSummaryPage';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
+import { studentsData } from "../data";
 
 export const SummaryPage = () => {
-
-    const dispatch = useDispatch();
-    const { studentId, studentName } = useSelector((state) => state.student);
-    const [studentRecords, setStudentRecords] = useState([]);
-    const changeRate = useChangeRate(1350);
-
-    const hasData = (id) =>  {
-        const storedData = JSON.parse(localStorage.getItem("studentRecords") || "{}");
-        return !!storedData[id];
-    }
-
     const {
-        control, watch, setValue, formState: { errors },
-    } = useForm({
-        defaultValues: {
-            student: "",
-        },
-    });
+        control,
+        errors,
+        studentName,
+        studentRecords,
+        studentIdField,
+        hasData,
+        findCommonClasses,
+        changeRate,
+    } = useSummaryPage();
     
-    const studentIdField = watch("student");
-
-    useEffect(() => {
-        if (studentIdField) {
-            const student = studentsData.students.find(
-                (student) => student.id === studentIdField
-            );
-            const studentName = student ? student.name : null;
-            dispatch(selectStudent({ studentId: studentIdField, studentName }));
-
-            const storedData = JSON.parse(
-                localStorage.getItem("studentRecords") || "{}"
-            );
-            const studentRecord = storedData[studentIdField];
-
-            if (studentRecord) {
-                setStudentRecords([
-                    {
-                        subjects: studentRecord.subjects.join(", "),
-                        credits: studentRecord.credits,
-                    },
-                ]);
-            } else {
-                setStudentRecords([]);
-            }
-        }
-    }, [studentIdField, dispatch]);
-
-    useEffect(() => {
-        if (studentId) {
-            setValue('student', studentId);
-        }
-        
-    }, [studentId, setValue])
+    const commonClasses = findCommonClasses();
 
     return (
         <>
@@ -75,90 +30,83 @@ export const SummaryPage = () => {
                     display: "flex",
                     justifyContent: "center",
                     padding: 2,
-                    "& form": {
-                        width: "30%",
-                        "@media (max-width: 600px)": {
-                            width: "100%",
-                        },
-                    },
+                    flexDirection: "column",
+                    alignItems: "center",
                 }}
             >
-                <form>
+                <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        width: "100%",
+                        "@media (min-width:600px)": { width: "40%" },
+                    }}
+                >
+                    <FormControl
+                        variant="filled"
+                        sx={{ width: "100%", marginRight: "16px" }}
+                        error={!!errors.student}
+                    >
+                        <InputLabel>Student</InputLabel>
+                        <Controller
+                            name="student"
+                            control={control}
+                            rules={{ required: "Student is required" }}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    label="Student"
+                                    name="student"
+                                >
+                                    {studentsData.students.map((student) => (
+                                        <MenuItem
+                                            key={student.id}
+                                            value={student.id}
+                                        >
+                                            {student.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            )}
+                        />
+                        {errors.student && (
+                            <FormHelperText>
+                                {errors.student.message}
+                            </FormHelperText>
+                        )}
+                    </FormControl>
+                    <Link
+                        to="/register"
+                        style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                        }}
+                    >
+                        <IconButton>
+                            <EditIcon />
+                        </IconButton>
+                    </Link>
+                </Grid>
+                {studentIdField && (
                     <Grid
                         item
                         xs={12}
                         sx={{
                             my: 2,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            width: "100%",
+                            "@media (min-width: 600px)": { width: "40%" },
                         }}
                     >
-                        <FormControl
-                            variant="filled"
-                            sx={{ flexGrow: 1 }}
-                            error={!!errors.student}
-                        >
-                            <InputLabel>Student</InputLabel>
-                            <Controller
-                                name="student"
-                                control={control}
-                                rules={{ required: "Student is required" }}
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        label="Student"
-                                        name="student"
-                                        sx={{ width: "100%" }}
-                                    >
-                                        {studentsData.students.map(
-                                            (student) => (
-                                                <MenuItem
-                                                    key={student.id}
-                                                    value={student.id}
-                                                >
-                                                    {student.name}
-                                                </MenuItem>
-                                            )
-                                        )}
-                                    </Select>
-                                )}
-                            />
-                            {errors.student && (
-                                <FormHelperText>
-                                    {errors.student.message}
-                                </FormHelperText>
-                            )}
-                        </FormControl>
-                        <Link
-                            to="/register"
-                            style={{
-                                textDecoration: "none",
-                                color: "inherit",
-                                marginLeft: "16px",
-                            }}
-                        >
-                            <IconButton>
-                                <EditIcon />
-                            </IconButton>
-                        </Link>
-                    </Grid>
-                </form>
-                <Grid item xs={12} sx={{ my: 2 }}>
-                    {studentIdField ? (
-                        hasData(studentIdField) ? (
-                            <TableContainer
-                                component={Paper}
-                                sx={{
-                                    width: "100%",
-                                    maxWidth: "100%",
-                                    margin: "auto",
-                                    "@media (min-width: 600px)": {
-                                        maxWidth: "40%",
-                                    },
-                                }}
-                            >
-                                <Table aria-label="student details table">
+                        {hasData(studentIdField) ? (
+                            <TableContainer component={Paper}>
+                                <Table
+                                    aria-label="student details table"
+                                    sx={{ width: "100%" }}
+                                >
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Subjects</TableCell>
@@ -174,26 +122,13 @@ export const SummaryPage = () => {
                                         {studentRecords.map((record, index) => (
                                             <TableRow key={index}>
                                                 <TableCell>
-                                                    {record.subjects
-                                                        .split(", ")
-                                                        .map((subjectId) => {
-                                                            const subject =
-                                                                subjectsData.subjects.find(
-                                                                    (s) =>
-                                                                        s.id.toString() ===
-                                                                        subjectId
-                                                                );
-                                                            return subject
-                                                                ? subject.name
-                                                                : "Unknown";
-                                                        })
-                                                        .join(", ")}
+                                                    {record.subjects}
                                                 </TableCell>
                                                 <TableCell align="right">
                                                     {record.credits}
                                                 </TableCell>
                                                 <TableCell align="right">
-                                                    $1350 // €{changeRate}
+                                                    $1350 ({changeRate} €)
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -210,12 +145,15 @@ export const SummaryPage = () => {
                                     ? `${studentName} does not have data and needs to register.`
                                     : "This student has no data."}
                             </Typography>
-                        )
-                    ) : (
-                        <Typography variant="h5" textAlign="center" color="red">
-                            Please select a student*
-                        </Typography>
-                    )}
+                        )}
+                    </Grid>
+                )}{" "}
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="h6" sx={{ mt: 2 }} textAlign="center">
+                        {commonClasses && commonClasses.length > 0
+                            ? `Common classes with other students: ${commonClasses.map(c => `${c.studentName} (${c.subjects.join(", ")})`).join(", ")}`
+                            : "No common classes with other students."}
+                    </Typography>
                 </Grid>
             </Grid>
         </>

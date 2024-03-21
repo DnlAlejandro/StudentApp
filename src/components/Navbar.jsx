@@ -5,11 +5,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { MenuBook } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 
-
 const pages = [
     { title: "Register Signatures", path: "/register" },
     { title: "Summary", path: "/summary" },
 ];
+
 export const Navbar = () => {
     const { studentName } = useSelector((state) => state.student);
 
@@ -93,16 +93,14 @@ export const Navbar = () => {
                         >
                             {pages.map((page) => (
                                 <Link
+                                    key={page.title}
                                     to={page.path}
                                     style={{
                                         textDecoration: "none",
                                         color: "inherit",
                                     }}
                                 >
-                                    <MenuItem
-                                        key={page.title}
-                                        onClick={handleCloseNavMenu}
-                                    >
+                                    <MenuItem onClick={handleCloseNavMenu}>
                                         <Typography textAlign="center">
                                             {page.title}
                                         </Typography>

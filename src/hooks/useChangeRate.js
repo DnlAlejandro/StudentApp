@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 const host = "api.frankfurter.app";
 
@@ -8,18 +8,18 @@ export const useChangeRate = (amount) => {
     useEffect(() => {
         if (amount) {
             fetch(`https://${host}/latest?amount=${amount}&from=USD&to=EUR`)
-                .then(resp => resp.json())
-                .then(data => {
+                .then((resp) => resp.json())
+                .then((data) => {
                     if (data.rates && data.rates.EUR) {
                         setConvertedAmount(data.rates.EUR);
                     }
                 })
-                .catch(error => {
-                    console.error('Error fetching currency data:', error);
+                .catch((error) => {
+                    console.error("Error fetching currency data:", error);
                     setConvertedAmount(null);
                 });
         }
     }, [amount]);
 
     return convertedAmount;
-}
+};

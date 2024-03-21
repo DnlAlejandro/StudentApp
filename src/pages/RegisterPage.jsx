@@ -1,116 +1,33 @@
 import { Button, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
-import CloseIcon from '@mui/icons-material/Close';
-import { Controller, useForm } from "react-hook-form";
-import subjectsData from "../data/subjects.json";
-import studentsData from "../data/students.json";
-import { useChangeRate } from "../hooks/useChangeRate";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import CloseIcon from "@mui/icons-material/Close";
+import { Controller } from "react-hook-form";
+import { useRegisterForm } from "../hooks/";
+import { studentsData } from "../data";
 
 export const RegisterPage = () => {
     const {
         register,
         handleSubmit,
         control,
-        watch,
-        reset,
-        setValue,
-        formState: { errors },
-    } = useForm({
-        defaultValues: {
-            subjects: [],
-            student: "",
-        },
-    });
-
-    const { studentId } = useSelector((state) => state.student);
-    const studentIdField = watch("student");
-
-    useEffect(() => {
-        if (studentIdField) {
-            const storedData = JSON.parse(localStorage.getItem('studentRecords')) || {};
-            const studentData = storedData[studentIdField];
-
-            if (studentData) {
-                reset({ ...studentData });
-            }
-        }
-    }, [studentIdField, reset]);
-
-    useEffect(() => {
-        if (studentId) {
-            setValue('student', studentId);
-        }
-        
-    }, [studentId, setValue])
-
-    const credits = watch("credits");
-    const calculatedValue = credits ? credits * 150 : null;
-    const changeRate = useChangeRate(calculatedValue);
-
-    const validateSubjects = (selectedSubjectIds) => {
-        if (selectedSubjectIds.length !== 3 ) {
-            return "You must select 3 subjects";
-        }
-    
-        const professorIds = selectedSubjectIds.map(subjectId => {
-            const subject = subjectsData.subjects.find(subject => subject.id === subjectId);
-            return subject ? subject.professor.id : null;
-        });
-    
-        const uniqueProfessors = new Set(professorIds);
-        if (uniqueProfessors.size < selectedSubjectIds.length) {
-            return "You must not select multiple subjects from the same professor";
-        }
-        return true;
-    };
-
-    const onSubmit = (data) => {
-        const currentRecords =
-            JSON.parse(localStorage.getItem("studentRecords")) || {};
-        const studentId = data.student;
-
-        currentRecords[studentId] = {
-            ...currentRecords[studentId],
-            ...data,
-        };
-
-        localStorage.setItem("studentRecords", JSON.stringify(currentRecords));
-        reset({
-            subjects: [],
-            credits: 0,
-            student: "",
-        });
-        handleClick();
-    };
-
-    const [open, setOpen] = useState(false);
-
-    const handleClick = () => {
-        setOpen(true);
-    };
-
-    const handleClose = (event, reason) => {
-        if (reason === "clickaway") {
-            return;
-        }
-
-        setOpen(false);
-    };
+        errors,
+        validateSubjects,
+        calculatedValue,
+        changeRate,
+        open,
+        handleClose,
+        subjectsData,
+    } = useRegisterForm();
 
     const action = (
-        <>
-            <IconButton
-
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-            >
-                <CloseIcon fontSize="small" />
-            </IconButton>
-        </>
+        <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => handleClose("manual")}
+        >
+            <CloseIcon fontSize="small" />
+        </IconButton>
     );
 
     return (
@@ -132,7 +49,8 @@ export const RegisterPage = () => {
                     },
                 }}
             >
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit}>
+                    {" "}
                     <Grid item xs={12} sx={{ my: 2 }}>
                         <FormControl
                             variant="filled"
@@ -193,7 +111,6 @@ export const RegisterPage = () => {
                                 variant="filled"
                                 InputLabelProps={{ shrink: true }}
                                 error={!!errors.credits}
-                                inputProps={{ min: 0 }}
                                 helperText={
                                     errors.credits ? errors.credits.message : ""
                                 }
@@ -210,17 +127,13 @@ export const RegisterPage = () => {
                     >
                         <Grid item>
                             <Typography sx={{ mt: 2 }}>
-                                Value credits:
+                                Value credits: $
+                                {calculatedValue ? calculatedValue : 0}
                             </Typography>
                         </Grid>
                         <Grid item>
                             <Typography sx={{ mt: 2 }}>
-                                ${calculatedValue ? calculatedValue : 0}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Typography sx={{ mt: 2 }}>
-                                €{calculatedValue ? changeRate : 0}
+                                €{changeRate ? changeRate : 0}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -277,11 +190,13 @@ export const RegisterPage = () => {
             </Grid>
             <Snackbar
                 open={open}
-                autoHideDuration={5000}
-                onClose={handleClose}
+                autoHideDuration={6000}
+                onClose={() => handleClose("manual")}
                 message="Your subjects were registered correctly"
                 action={action}
-                sx={{ '& .MuiSnackbarContent-root': { backgroundColor: 'green' } }}
+                sx={{
+                    "& .MuiSnackbarContent-root": { backgroundColor: "green" },
+                }}
             />
         </>
     );

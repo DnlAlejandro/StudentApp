@@ -1,8 +1,6 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { RegisterPage } from '../pages/RegisterPage'
-import { SummaryPage } from '../pages/SummaryPage'
-import { StudentApp } from '../StudentApp'
-import { HomePage } from '../pages/HomePage'
+import { Navigate, Route, Routes } from "react-router-dom";
+import { RegisterPage, SummaryPage, HomePage } from "../pages/";
+import { StudentApp } from "../StudentApp";
 
 export const AppRouter = () => {
     return (
@@ -14,5 +12,5 @@ export const AppRouter = () => {
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
         </Routes>
-    )
-}
+    );
+};

@@ -10,23 +10,23 @@ const description =
 
 export const HomePage = () => {
     return (
-    <Grid container justifyContent="center">
-                <Grid item xs={12} sm={6} md={4} sx={{ m: 5 }}>
-                    <CardInfo
-                        image={imageRegister}
-                        title="Register"
-                        description={description}
-                        button="/register"
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4} sx={{ m: 5 }}>
-                    <CardInfo
-                        image={imageSummary}
-                        title="Summary"
-                        description={description}
-                        button="/summary"
-                    />
-                </Grid>
+        <Grid container justifyContent="center">
+            <Grid item xs={12} sm={6} md={4} sx={{ m: 5 }}>
+                <CardInfo
+                    image={imageRegister}
+                    title="Register"
+                    description={description}
+                    button="/register"
+                />
             </Grid>
-  )
-}
+            <Grid item xs={12} sm={6} md={4} sx={{ m: 5 }}>
+                <CardInfo
+                    image={imageSummary}
+                    title="Summary"
+                    description={description}
+                    button="/summary"
+                />
+            </Grid>
+        </Grid>
+    );
+};
